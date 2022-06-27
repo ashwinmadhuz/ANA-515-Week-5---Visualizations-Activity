@@ -1,0 +1,51 @@
+---
+title: "Soccer Predictions"
+author: "Ashwin Madhusudan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    highlight: pygments
+    theme: sandstone
+---
+
+<div style="margin-bottom:100px;">
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reading the Data:
+
+```{r }
+library(readr)
+soccermatches <- read_csv("spi_matches.csv")
+```
+
+## Clean the Data
+```{r}
+soccermatchesfinal <- plyr::rename(soccermatches, c("date" = "Match_Date"))
+soccermatchesfinal$Match_Date <- format(soccermatchesfinal$Match_Date, format = "%m/%d/%y")
+```
+
+## Vizualization 1:
+
+The first exploratory visualization is a histogram indicating the number of soccer games that were played across all 8 soccer leagues in the 2016 season. As the code chunk indicates below, this was achieved by creating a subset of the original cleaned dataset specifically for 2016 season data and then created a table for this data that acts as the base for the visualization.
+
+```{r }
+soccermatchessubset2 <- subset(soccermatchesfinal,season=='2016')
+mytable <- table(soccermatchessubset2$season, soccermatchessubset2$league)
+barplot <- barplot(mytable, yaxp=c(0, max(mytable),5), legend = rownames(mytable), ylab = "Number of Games", col=c("light blue"), las=2, cex.names =1)
+```
+
+</div>
+## Vizualization 2:
+
+The second exploratory visualization indicates the involvement of premier leagues in the UEFA champions leagues each season from 2016-2021 in the form of a bar chart as well as a pie chart.
+
+```{r }
+soccermatchessubset3 <- subset(soccermatchesfinal,league=='UEFA Champions League')
+soccermatchessubset4 <- subset(soccermatchessubset3,PremierLeagueCheck=='YES')
+mytable2 <- table(soccermatchessubset4$season)
+barplot(mytable2, yaxp=c(0, max(mytable2),5), xlab = "Season", ylab = "Premier League Team Involved", col=c("blue"))
+pie(mytable2,main="Pie Chart of Premier League Involvment in the UCL")
+```
+
